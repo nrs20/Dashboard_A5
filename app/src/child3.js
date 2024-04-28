@@ -1,88 +1,67 @@
-import React, { Component } from "react";
-import * as d3 from "d3";
-class Child3 extends Component {
-  constructor(props) {
+import React,{Component} from 'react';
+import * as d3 from 'd3';
+
+class Child3 extends Component{
+  constructor(props){
     super(props);
     this.state = {};
   }
-  componentDidMount() {
-    //console.log("componentDidMount (data is): ", this.props.data1);
-    this.setState({ x_scale: 10 });
+  componentDidMount(){
+    console.log(this.props.data3);
   }
-  componentDidUpdate() {
-    // set the dimensions and margins of the graph
+  componentDidUpdate(){
+    var data = this.props.data3;
+
     var margin = { top: 10, right: 10, bottom: 30, left: 20 },
       w = 500 - margin.left - margin.right,
-      h = 300 - margin.top - margin.bottom;
+      h= 300 - margin.top - margin.bottom;
 
-    var data = this.props.data3;
-    var temp_data = d3.flatRollup(
-      data,
-      (d) => d.length,
-      (d) => d.day
-    );
-    console.log(temp_data); // Check the format of the data in the conosole
-
-    var container = d3
-      .select(".child3_svg")
-      .attr("width", w + margin.left + margin.right)
-      .attr("height", h + margin.top + margin.bottom)
+      //this is the svg element that will contain the chart
+    var container = d3.select('.child3_svg')
+      .attr('width', w + margin.left + margin.right)
+      .attr('height', h + margin.top + margin.bottom)
       .select(".g_3")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+      .attr("transform", `translate( ${margin.left}, ${margin.top})`);
 
     // X axis
-    var x_data = temp_data.map((item) => item[0]);
-    var x_scale = d3
-      .scaleBand()
-      .domain(x_data)
-      .range([margin.left, w])
-      .padding(0.2);
+    var x_data= data.map(item=>item.total_bill);
 
-    container
-      .selectAll(".x_axis_g")
-      .data([0])
-      .join("g")
-      .attr("class", "x_axis_g")
+    const x_scale = d3.scaleLinear()
+    // domain is the range of the input data (x-axis data)
+      .domain([5, d3.max(x_data)])
+      // range is the range of the output data
+      .range([margin.left, w]);
+    container.selectAll(".x_axis_g").data([0]).join("g").attr("class", "x_axis_g")  
       .attr("transform", `translate(0, ${h})`)
       .call(d3.axisBottom(x_scale));
-    // Add Y axis
-    var y_data = temp_data.map((item) => item[1]);
-    var y_scale = d3
-      .scaleLinear()
-      .domain([0, d3.max(y_data)])
-      .range([h, 0]);
 
-    container
-      .selectAll(".y_axis_g")
-      .data([0])
-      .join("g")
-      .attr("class", "y_axis_g")
-      .attr("transform", `translate(${margin.left},0)`)
+    // Add Y axis
+    var y_data= data.map(item=>item.tip);
+
+    const y_scale = d3.scaleLinear()
+      .domain([0, d3.max(y_data)])
+      .range([h, margin.top]);
+    container.selectAll(".y_axis_g").data([0]).join("g").attr("class", "y_axis_g")
+      .attr("transform", `translate(${margin.left}, 0)`)
       .call(d3.axisLeft(y_scale));
 
-    container
-      .selectAll("rect")
-      .data(temp_data)
-      .enter()
-      .append("rect")
-      .attr("x", function (d) {
-        return x_scale(d[0]);
+    container.selectAll(".circle")
+      .data(data)
+      .join("circle")
+      .attr("cx", function(d) { 
+        return x_scale(d.total_bill); 
       })
-      .attr("y", function (d) {
-        return y_scale(d[1]);
+      .attr("cy", function(d) { 
+        return y_scale(d.tip); 
       })
-      .attr("width", x_scale.bandwidth())
-      .attr("height", function (d) {
-        return h - y_scale(d[1]);
-      })
-      .attr("fill", "#69b3a2");
+      .attr("r", 3)
+      .style("fill", "#69b3a2");
   }
-  render() {
-    return (
-      <svg className="child3_svg">
-        <g className="g_3"></g>
-      </svg>
-    );
+
+  render(){
+    return <svg className='child3_svg'>
+      <g className='g_3'></g>  
+    </svg>
   }
 }
 export default Child3;
