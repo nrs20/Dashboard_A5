@@ -55,6 +55,16 @@ g.legend-axis path {
 
 }
 
+.radio-container {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+}
+
+.radio {
+  margin-right: 10px; /* Add margin between radio options */
+}
+
+
 .color-bar{
   
 }
