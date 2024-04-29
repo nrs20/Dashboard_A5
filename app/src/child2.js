@@ -105,7 +105,7 @@ class Child2 extends Component {
     const cBar_leg = svg_element.append("g").attr("transform", `translate(${w + margin.left + 100 + colorLegendWidth}, ${margin.top-95})`).attr("y", 100)
 
     // matrix title styling
-    svgGroup.append("text").text("Correlation Matrix").attr("y", -margin.top / 60)
+    svgGroup.append("text").text("Correlation matrix").attr("y", -margin.top / 60)
     .attr("x", (w + margin.left + margin.right + colorLegendWidth) / 4) .attr("dy", "-1.0em");
     console.log("correlationVals!!", correlationVals)
 
