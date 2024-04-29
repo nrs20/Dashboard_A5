@@ -171,7 +171,7 @@ matrixRows.each(function(matrixRow) {
       //this controls the length of the legend scale.
       .range([425, 120]);
 
-    const axis = d3.axisLeft(colorBarScale) // Change to d3.axisLeft to position the axis on the left side
+    const axis = d3.axisLeft(colorBarScale) 
       .tickSize(0)
       .ticks(6)
       .tickPadding(1)
@@ -183,9 +183,7 @@ matrixRows.each(function(matrixRow) {
       .attr("transform", `translate(0, 0)`).call(axis);
 
     // actual color bar 
-    const colorBar = svg_element.append("g").attr("class", "color-bar").attr("transform", `translate(${w + margin.left + 80}, ${margin.top + 25})`); 
-      //decrease spacing of legend text
-      
+    const colorBar = svg_element.append("g").attr("class", "color-bar").attr("transform", `translate(${w + margin.left + 80}, ${margin.top + 25})`);       
       colorBar.append("rect")
       .attr("width", colorLegendWidth)
       .attr("height", 300).style("fill", "url(#colorBar_ColorScheme)");
