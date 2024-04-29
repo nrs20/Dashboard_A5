@@ -113,14 +113,10 @@ class Child2 extends Component {
     svgGroup.selectAll(".labelForCols")
       //bind data to the selection (each element in the selection is bound to an element in the array. )
       .data(this.state.numericalVariables)
-      .join("text")      
-      .attr("dy", "-1.5em")
-      //append a text element to each placeholder
-      .attr("x", (p, i) => i * widthOfRectangle + widthOfRectangle / 2)
-      .attr("y", h - margin.bottom /300)
+      .join("text").attr("dy", "-1.5em")
+      .attr("x", (p, i) => i * widthOfRectangle + widthOfRectangle / 2).attr("y", h - margin.bottom /300)
       //make text centered
       .style("text-anchor", "middle")
-      //align verti
       //binding each element in the array to the text element..
       .text(data => data);
   
@@ -129,8 +125,7 @@ class Child2 extends Component {
     svgGroup.selectAll(".labelFormatrixRows")
       .data(this.state.numericalVariables)
       .join("text") // appends elements & creates placeholders for each element in the array
-      .attr("padding", 10)
-      .attr("x", -margin.left )
+      .attr("padding", 10).attr("x", -margin.left )
       //
       .attr("y", function (param, i) {
         return i * heightOfRectangle + heightOfRectangle / 2;
@@ -150,10 +145,8 @@ matrixRows.each(function(matrixRow) {
   //this === current row
   console.log("matrixRow", matrixRow)
     const squares = d3.select(this)
-        .selectAll("g")
-        .data(matrixRow)
-        .join("g")
-        .attr("transform", (d, i) => `translate(${i * widthOfRectangle}, 0)`);
+        .selectAll("g").data(matrixRow)
+        .join("g").attr("transform", (d, i) => `translate(${i * widthOfRectangle}, 0)`);
 
     // append rect & text
     squares.each(function(cell) {
@@ -185,11 +178,9 @@ matrixRows.each(function(matrixRow) {
 
   
 
-      cBar_leg.append("g")
-      .attr("class", "legend-axis")
+      cBar_leg.append("g").attr("class", "legend-axis")
       //move the legend scale down
-      .attr("transform", `translate(0, 0)`)
-      .call(axis);
+      .attr("transform", `translate(0, 0)`).call(axis);
 
     // actual color bar 
     const colorBar = svg_element.append("g").attr("class", "color-bar").attr("transform", `translate(${w + margin.left + 80}, ${margin.top + 25})`); 
@@ -214,7 +205,6 @@ matrixRows.each(function(matrixRow) {
 
 
 
-   
 
       
   }
