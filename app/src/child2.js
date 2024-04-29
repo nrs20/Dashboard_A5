@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
+import App from "./App";
+import { useContext, createContext, useState } from 'react';
+export const NameContext = createContext();
+const globalArray = [];
 class Child2 extends Component {
   constructor(props) {
     super(props);
@@ -7,11 +11,14 @@ class Child2 extends Component {
   };
   }
 
+
   componentDidMount() {
     // Calculate correlation matrix from data passed in app.js
     const { data2 } = this.props;
+    var {returnArray} = this.props;
+  
     const corrVal = this.corrCalculation(data2);
-    console.log("CORRELATION MATRIX:", corrVal);
+    //console.log("CORRELATION MATRIX:", corrVal);
 
     this.matrixCreation(corrVal);
   }
@@ -19,31 +26,43 @@ class Child2 extends Component {
   componentDidUpdate() {
      // Calculate correlation matrix from data passed in app.js
     const { data2 } = this.props;
+    var {returnArray} = this.props;
+    //returnArray = ["fatty"]
     const corrVal = this.corrCalculation(data2);
-
+    console.log("THIS IS RETURN ARRAY IN CHILD2", returnArray);
     this.matrixCreation(corrVal);
+    
+    console.log("RIGHT BEFORE UPDATERETURNARRAY")
 
 
   }
-  corrCalculation(data) {;
+  
+
+ 
+  corrCalculation(data) {
+    
     const numericalVariables_copy = ['total_bill', 'tip', 'size'];
+    const returnArray = [];
     const corrVal = [];
     var correlationVals = [];
-    console.log("correlationVals", correlationVals)
+    const mappedData = [];
+    //console.log("correlationVals", correlationVals)
     //go thru each variable
     this.state.numericalVariables.forEach((variable1) => {
-      console.log("variable1", variable1)
+    //  console.log("variable1", variable1)
       //for each variable, do .map to loop through the numericalVariables_copy in order to get 3x3
       //variableLooped == element in cols
       const row = numericalVariables_copy.map((variableLooped) => {
         //for each entry in the variable array and numericalVariables_copy array, calculate correlation
-        console.log("variableLooped", variableLooped)
+       // console.log("variableLooped", variableLooped)
 
         // getting the x and y values from the data to prep for calculation...
         //type: Array(244) [ {…}, {…}, {…}, … ]
         const xValue = data.map(d => d[variable1]);
-        console.log("xValue", xValue)
+      //  console.log("xValue", xValue)
         const yValue = data.map(d => d[variableLooped]);
+
+
 
         //calculate average of x numericalVariables_copy
         var total = 0;
@@ -70,15 +89,15 @@ class Child2 extends Component {
 
 
     });
-
-    console.log("corrVal", corrVal)
+    
+    //console.log("corrVal", corrVal)
     return correlationVals;
   }
 
+  
+  matrixCreation(corrVal) { 
+    const that = this;
 
-
-
-  matrixCreation(corrVal) {    
     const correlationVals = corrVal.reduce((acc, row) => acc.concat(row), []);
     //  dimensions
     const margin = { top: 10, right: 10, bottom: 130, left: 60 };
@@ -89,6 +108,8 @@ class Child2 extends Component {
     const heightOfRectangle = h / 3.5;   
      const maximum = d3.max(correlationVals);
     const roundedMax = Math.round(maximum * 100) / 100;
+
+
     const colorPalette = d3.scaleSequential()
       .domain([d3.min(correlationVals), d3.max(correlationVals)]) // use the min and max correlation values
       .interpolator(t => d3.interpolatePlasma(t)); //color palette islam used
@@ -107,7 +128,7 @@ class Child2 extends Component {
     // matrix title styling
     svgGroup.append("text").text("Correlation Matrix").attr("y", -margin.top / 60)
     .attr("x", (w + margin.left + margin.right + colorLegendWidth) / 4) .attr("dy", "-1.0em");
-    console.log("correlationVals!!", correlationVals)
+   // console.log("correlationVals!!", correlationVals)
 
     //all rules are applied for each element in the array one at a time...
     svgGroup.selectAll(".labelForCols")
@@ -131,9 +152,12 @@ class Child2 extends Component {
         return i * heightOfRectangle + heightOfRectangle / 2;
       })
       .text(d => d);
-    console.log("matrix", corrVal)
+    //console.log("matrix", corrVal)
+  //create a map for each row in the matrix containing the correlation values and the variable names
+
   
-    
+    const rowLabels = ['total_bill', 'tip', 'size'];
+    const colLabels = ['total_bill', 'tip', 'size'];
 // bind data to matrixRows
 const matrixRows = svgGroup.selectAll(".row")
     .data(corrVal)
@@ -142,16 +166,25 @@ const matrixRows = svgGroup.selectAll(".row")
 
 // append squares for each rpw
 matrixRows.each(function(matrixRow) {
+  //const that = this;
+
   //this === current row
-  console.log("matrixRow", matrixRow)
+ // console.log("matrixRow", matrixRow)
     const squares = d3.select(this)
         .selectAll("g").data(matrixRow)
         .join("g").attr("transform", (d, i) => `translate(${i * widthOfRectangle}, 0)`);
+    //console.log("HERE IS SQUARES", squares)
 
     // append rect & text
     squares.each(function(cell) {
         const group = d3.select(this);
+        // assign an id to each square containing the variable names
+        group.attr("id", (d, i) => `square-${i}-${d}`);
+       // console.log("GROUP RIGHT HERE", group)
+      //print the id of the square
+
         const correlationVal = cell;
+        //bind correlation values to the labels
 
         group.append("rect")
             .attr("width", widthOfRectangle).attr("fill", colorPalette(correlationVal)).attr("height", heightOfRectangle)
@@ -159,8 +192,45 @@ matrixRows.each(function(matrixRow) {
         group.append("text")
             .attr("x", widthOfRectangle / 2).attr("y", heightOfRectangle / 2)
             .style("text-anchor", "middle").text(correlationVal >= 0.99 ? 1 : correlationVal.toFixed(2))
-            .style("fill", correlationVal >= 0.99 ? "black" : "white");
-    });
+
+            .style("fill", correlationVal >= 0.99 ? "black" : "white")
+
+           
+          });
+
+});
+
+
+const numVer = this.state.numericalVariables;
+matrixRows.each(function(matrixRow, rowIndex) {
+  // Select current row and bind data
+  const squares = d3.select(this)
+    .selectAll("g")
+    .data(matrixRow)  
+    .join("g")
+    .attr("transform", (d, i) => `translate(${i * widthOfRectangle}, 0)`)
+    .attr("id", (d, i) => `square-${rowIndex}-${i}`);  // Use index directly for simplicity
+
+  // add click event listener to each square
+// add click event listener to each square
+squares.on("click", (event, d) => { // Use arrow function here
+  const columnIndex = matrixRow.indexOf(d);  
+  const rowVariable = rowLabels[rowIndex];  
+  const columnVariable = colLabels[columnIndex]; 
+
+  console.log(`Clicked cell at row: ${rowVariable}, column: ${columnVariable}`);
+  console.log("Column index:", columnIndex, "Column variable:", columnVariable);
+  //THIS IS WHERE THE VARIABLES ARE STORED WHEN USER CLICKS ON MATRIX
+  const returnArray = [rowVariable, columnVariable];
+  console.log("returnArrayPoo", returnArray);
+//clickd variables are stored in globalArray
+  globalArray.length = 0;
+  globalArray.push(returnArray);
+console.log("globalArray", globalArray);
+
+//pass the globalArray to the scatter function(?)
+});
+
 });
 
 
@@ -206,6 +276,7 @@ matrixRows.each(function(matrixRow) {
 
       
   }
+
 
 
 
