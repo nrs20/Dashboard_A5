@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import App from "./App";
 import { useContext, createContext, useState } from 'react';
 export const NameContext = createContext();
 const globalArray = [];
@@ -127,8 +126,8 @@ class Child2 extends Component {
 
     // matrix title styling
     svgGroup.append("text").text("Correlation Matrix").attr("y", -margin.top / 60)
-    .attr("x", (w + margin.left + margin.right + colorLegendWidth) / 4) .attr("dy", "-1.0em");
-   // console.log("correlationVals!!", correlationVals)
+    .attr("x", (w + margin.left + margin.right + colorLegendWidth) / 4).attr("dy", "-1.0em");
+    // console.log("correlationVals!!", correlationVals)
 
     //all rules are applied for each element in the array one at a time...
     svgGroup.selectAll(".labelForCols")
