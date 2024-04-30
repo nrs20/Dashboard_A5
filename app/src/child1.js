@@ -6,20 +6,28 @@ class Child1 extends Component {
     this.state = {
       x_scale: 10,
       selectedOption: "day", // Initial selected option
-      //dataKey: "sex" // Initial data key for the chart
+      selectedTarget: "tip", // Initial selected target
+
     };
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
   componentDidMount() {
-    //console.log("componentDidMount (data is): ", this.props.data1);
     this.setState({ x_scale: 10 });
   }
-  componentDidUpdate() {
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.selectedTarget !== this.props.selectedTarget ||
+      prevState.selectedTarget !== this.state.selectedTarget) {
+      // Update the state with the new selected target
+      this.setState({ selectedTarget: this.props.selectedTarget });
+    }
+    console.log(this.state.selectedTarget)
+
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 10, bottom: 30, left: 20 },
       w = 500 - margin.left - margin.right,
-      h = 300 - margin.top - margin.bottom;
+      h = 350 - margin.top - margin.bottom;
 
     var data = this.props.data1;
 
@@ -40,13 +48,13 @@ class Child1 extends Component {
       .select(".g_1")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    // X axis
+    // Add x-axis
     var x_data = selected_data.map((item) => item[0]);
     var x_scale = d3
       .scaleBand()
       .domain(x_data)
       .range([margin.left, w])
-      .padding(0.2);
+      .padding(0.05);
 
     container
       .selectAll(".x_axis_g")
@@ -55,7 +63,33 @@ class Child1 extends Component {
       .attr("class", "x_axis_g")
       .attr("transform", `translate(0, ${h})`)
       .call(d3.axisBottom(x_scale));
-    // Add Y axis
+
+    // Add x-axis label
+    container
+      .selectAll(".x_axis_label")
+      .data([0])
+      .join("text")
+      .attr("class", "x_axis_label")
+      .attr("x", w / 2)
+      .attr("y", h + margin.bottom - 5)
+      .attr("text-anchor", "middle")
+      //.attr("font-family", "Arial")
+      .text(() => {
+        switch (this.state.selectedOption) {
+          case "sex":
+            return "Sex";
+          case "smoker":
+            return "Smoker";
+          case "day":
+            return "Day";
+          case "time":
+            return "Time";
+          default:
+            return "X Axis Label";
+        }
+      });
+
+    // Add y-axis 
     var y_data = selected_data.map((item) => item[1]);
     var y_scale = d3
       .scaleLinear()
@@ -71,6 +105,32 @@ class Child1 extends Component {
       .attr("transform", `translate(${margin.left},0)`)
       .call(d3.axisLeft(y_scale));
 
+    // Add y-axis label
+    container
+      .selectAll(".y_axis_label")
+      .data([0])
+      .join("text")
+      .attr("class", "y_axis_label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - h / 2)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      //.attr("font-family", "Arial")
+      .text(() => {
+        switch (this.state.selectedTarget) {
+          case "tip":
+            return "Tip";
+          case "total_bill":
+            return "Total Bill";
+          case "size":
+            return "Size";
+          default:
+            return "Y Axis Label";
+        }
+      });
+
+    // Bars of bar chart
     container
       .selectAll("rect")
       .data(selected_data)
@@ -89,9 +149,7 @@ class Child1 extends Component {
       .attr("height", function (d) {
         return h - y_scale(d[1]);
       })
-      .attr("fill", "#69b3a2");
-
-
+      .attr("fill", "#b0b0b0");
   }
 
   handleOptionChange(changeEvent) {
@@ -142,7 +200,7 @@ class Child1 extends Component {
           <label htmlFor="time">Time</label>
         </div>
         {/* SVG for the chart */}
-        <svg className="child1_svg">
+        <svg className="child1_svg" width={500} height={1}>
           <g className="g_1"></g>
         </svg>
       </div>

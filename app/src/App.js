@@ -11,7 +11,9 @@ class App extends Component {
     super(props);
     this.state = {
       data: [],
+      selectedDropdownValue: 'tip'
     };
+    this.handleDropdownChange = this.handleDropdownChange.bind(this);
   }
 
   componentDidMount() {
@@ -35,30 +37,37 @@ class App extends Component {
       });
   }
 
+  // Function to store selected target in row 1 dropdown menu
+  handleDropdownChange(event) {
+    const newDropdownValue = event.target.value;
+    this.setState({ selectedDropdownValue: newDropdownValue });
+  }
+
   // Function to update returnArray in the state
   updateReturnArray = (newReturnArray) => {
     this.setState({ returnArray: newReturnArray });
   };
 
   render() {
-    const { data} = this.state; 
+    const {data} = this.state; 
 
     return (
       <div className='parent'>
         <div className='row1'>
           <div className='dropdown'>
             Select Target: 
-            <select>
+            <select value={this.state.selectedDropdownValue} onChange={this.handleDropdownChange}>
               <option value='tip'>Tip</option>
               <option value='total_bill'>Total Bill</option>
               <option value='size'>Size</option>
+              {console.log("Selected Target Updated: ", this.state.selectedDropdownValue)}
             </select>
           </div>
         </div>
 
         <div className='row2'>
           <div className='child1'>
-            <Child1 data1={data} />
+            <Child1 data1={data} selectedTarget={this.state.selectedDropdownValue}/>
           </div>
           <div className='child2'>
             {/* Pass updateReturnArray as prop to Child2 */}
