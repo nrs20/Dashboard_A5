@@ -14,12 +14,15 @@ class Child2 extends Component {
   componentDidMount() {
     // Calculate correlation matrix from data passed in app.js
     const { data2 } = this.props;
-    var {returnArray} = this.props;
+    var returnArray;
+    returnArray = ['total_bill', 'tip']
+    this.props.updateReturnArray(returnArray);
   
     const corrVal = this.corrCalculation(data2);
     //console.log("CORRELATION MATRIX:", corrVal);
 
     this.matrixCreation(corrVal);
+
   }
 
   componentDidUpdate() {
@@ -27,21 +30,18 @@ class Child2 extends Component {
     const { data2 } = this.props;
     var {returnArray} = this.props;
     //returnArray = ["fatty"]
+
     const corrVal = this.corrCalculation(data2);
     console.log("THIS IS RETURN ARRAY IN CHILD2", returnArray);
+
     this.matrixCreation(corrVal);
-    
     console.log("RIGHT BEFORE UPDATERETURNARRAY")
-
-
   }
   
-
- 
   corrCalculation(data) {
     
     const numericalVariables_copy = ['total_bill', 'tip', 'size'];
-    const returnArray = [];
+
     const corrVal = [];
     var correlationVals = [];
     const mappedData = [];
@@ -193,10 +193,7 @@ matrixRows.each(function(matrixRow) {
             .style("text-anchor", "middle").text(correlationVal >= 0.99 ? 1 : correlationVal.toFixed(2))
 
             .style("fill", correlationVal >= 0.99 ? "black" : "white")
-
-           
           });
-
 });
 
 
@@ -221,6 +218,8 @@ squares.on("click", (event, d) => { // Use arrow function here
   console.log("Column index:", columnIndex, "Column variable:", columnVariable);
   //THIS IS WHERE THE VARIABLES ARE STORED WHEN USER CLICKS ON MATRIX
   const returnArray = [rowVariable, columnVariable];
+  // pass the returnArray to the parent component using the updateReturnArray function
+  that.props.updateReturnArray(returnArray);
   console.log("returnArrayPoo", returnArray);
 //clickd variables are stored in globalArray
   globalArray.length = 0;
@@ -245,8 +244,6 @@ console.log("globalArray", globalArray);
       .ticks(6)
       .tickPadding(1)
 
-  
-
       cBar_leg.append("g").attr("class", "legend-axis")
       //move the legend scale down
       .attr("transform", `translate(0, 0)`).call(axis);
@@ -269,16 +266,7 @@ console.log("globalArray", globalArray);
       .attr("offset", "75%").attr("stop-color", "purple");
     colorBar_ColorScheme.append("stop")
       .attr("offset", "100%").attr("stop-color", "#00008b");
-
-
-
-
-      
   }
-
-
-
-
 
   render() {
     return (

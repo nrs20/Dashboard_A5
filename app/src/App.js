@@ -47,10 +47,12 @@ class App extends Component {
   updateReturnArray = (newReturnArray) => {
     this.setState({ returnArray: newReturnArray });
   };
+  
+
 
 
   render() {
-    const {data} = this.state; 
+    const {data, returnArray} = this.state; 
 
     return (
       <div className='parent'>
@@ -79,7 +81,7 @@ class App extends Component {
         <div className='row3'>
           <div className='child3'>
             {/* Pass returnArray as prop to Child3 */}
-            <Child3 data3={data} />
+            <Child3 data3={data} target= {returnArray} />
           </div>
         </div>
       </div>
