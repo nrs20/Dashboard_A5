@@ -86,6 +86,7 @@ console.log(`Average Size: ${sizeAverage.toFixed(2)}`);
       .join("g")
       .attr("class", "x_axis_g")
       .attr("transform", `translate(0, ${h})`)
+      .attr("text-size", "15px")
       .call(d3.axisBottom(x_scale));
 
     // Add x-axis label
@@ -97,6 +98,7 @@ console.log(`Average Size: ${sizeAverage.toFixed(2)}`);
       .attr("x", w / 2)
       .attr("y", h + margin.bottom - 5)
       .attr("text-anchor", "middle")
+      .attr("font-size", "15px")
       //.attr("font-family", "Arial")
       .text(() => {
         switch (this.state.selectedOption) {
@@ -111,7 +113,7 @@ console.log(`Average Size: ${sizeAverage.toFixed(2)}`);
           default:
             return "X Axis Label";
         }
-      });
+      }).attr("font-size", "15px");
 
     // Add y-axis 
     var y_data = selected_data.map((item) => item[1]);
@@ -132,6 +134,11 @@ console.log(`Average Size: ${sizeAverage.toFixed(2)}`);
       .scaleLinear()
       .domain([0, d3.max(y_data)])
       .range([h, 0]);
+      var yAxis = d3.axisLeft(y_scale)
+      .ticks(5)
+
+      //make tick labels increments of 5
+
       function barAverageCalculation(data, selectedRatioItem, selectedDropdownItem) {
         const sums = {};
         const counts = {};
@@ -172,12 +179,12 @@ console.log(`Average Size: ${sizeAverage.toFixed(2)}`);
 
 console.log("selected_data", this.props.selectedTarget)
     container
-      .selectAll(".y_axis_g")
+      .selectAll(".y_axis_g3")
       .data([0])
       .join("g")
-      .attr("class", "y_axis_g")
+      .attr("class", "y_axis_g3")
       .attr("transform", `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y_scale));
+      .call(d3.axisLeft(y_scale).ticks(5));
 
     // Add y-axis label
     container
@@ -186,7 +193,7 @@ console.log("selected_data", this.props.selectedTarget)
       .join("text")
       .attr("class", "y_axis_label")
       .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
+      .attr("y", -7 - margin.left)
       .attr("x", 0 - h / 2)
       .attr("dy", "1em")
       .style("text-anchor", "middle")
@@ -215,9 +222,8 @@ console.log("selected_data", this.props.selectedTarget)
       var averageResultsY = averageResults.map(item => item.average);
       console.log("averageResultsX", averageResultsX)
       console.log("averageResultsY", averageResultsY)
-    // Bars of bar chart
 
-  
+    // Bars of bar chart
     container
       .selectAll("rect")
       .data(selected_data)
@@ -242,23 +248,31 @@ console.log("selected_data", this.props.selectedTarget)
 
       console.log("x_data!!!!!", x_data)
 
-
+var barwidth = x_scale.bandwidth();
  //this is where the averages are placed onto the bars
-    container
-    .selectAll(".average_numbers_label")
-    .data(averageResultsY)
-    .join("text")
-    .attr("class", "average_numbers_label")
-    .attr("x", (d, i) => x_scale(averageResultsX[i]) + x_scale.bandwidth() / 2)
-    .attr("y", function (d) {
-      return y_scale(d); 
-    })
-    .attr("text-anchor", "middle")
-    .text(d => d.toFixed(5))
-    .attr("fill", "gray")
-    .attr("dy", "0.75em"); 
+ console.log("HELLO>?")
+ console.log("x_scale_bandwidth",barwidth)
+ container
+ 
+ .selectAll(".average_numbers_label")
+ .data(averageResultsY)
+ .join("text")
+ .attr("class", "average_numbers_label")
+ .attr("x", (d, i) => x_scale(averageResultsX[i]) + x_scale.bandwidth()/2)
+ .attr("y", function (d) {
+     return y_scale(d) - 45;
+ })
+ .attr("height", function (d) {
+  return h - y_scale(d);
+})
+ .attr("text-anchor", "middle")
+ .text(d => d.toFixed(5))
+ .attr("fill", "gray")
+ .attr("dy", "-0.35em"); 
+
   
   }
+//remove axis scales (in css)
 
 
   handleOptionChange(changeEvent) {

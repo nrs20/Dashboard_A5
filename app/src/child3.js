@@ -51,7 +51,7 @@ class Child3 extends Component{
       .range([margin.left, w]);
     container.selectAll(".x_axis_g").data([0]).join("g").attr("class", "x_axis_g")  
       .attr("transform", `translate(0, ${h})`)
-      .call(d3.axisBottom(x_scale));
+      .call(d3.axisBottom(x_scale) .tickValues(d3.range(x_scale.domain()[0], x_scale.domain()[1] + 10, 10)));
 
     // Add Y axis
     // var y_data= data.map(item=>item.tip);
@@ -72,7 +72,10 @@ class Child3 extends Component{
       .range([h, margin.top]);
     container.selectAll(".y_axis_g").data([0]).join("g").attr("class", "y_axis_g")
       .attr("transform", `translate(${margin.left}, 0)`)
-      .call(d3.axisLeft(y_scale));
+      //change y axis labels  to increments of 5
+      
+      .call(d3.axisLeft(y_scale)
+      .tickValues(d3.range(y_scale.domain()[0], y_scale.domain()[1] + 2, 2))); // Set tick values to increments of 5
       // add axis name
     container.selectAll(".x_axis_name")
       .data([0])
@@ -115,6 +118,9 @@ class Child3 extends Component{
       .attr("r", 3)
       .style("fill", "#69b3a2");
     
+    
+      
+      //change y axis label to increments of 5
       
   }
 

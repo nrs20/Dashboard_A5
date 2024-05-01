@@ -74,4 +74,13 @@ g.legend-axis path {
 
 .color-bar{
   
+}.x_axis_g path,
+.x_axis_g line {
+  display: none;
+}
+
+.y_axis_g3 path,
+.y_axis_g3 line
+{
+  display: none;
 }
