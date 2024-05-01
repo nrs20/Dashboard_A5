@@ -81,8 +81,8 @@ class Child2 extends Component {
         const coefficientCalculation = d3.mean(xValue.map((d, i) => (d - avgX) * (yValue[i] - avgY)));
         const standardDeviation_X = d3.deviation(xValue);
         const standardDeviation_Y = d3.deviation(yValue);
-
-        return coefficientCalculation / (standardDeviation_X * standardDeviation_Y);
+        total = coefficientCalculation / (standardDeviation_X * standardDeviation_Y)
+        return total;
       });
       correlationVals = [...correlationVals, row];
 
